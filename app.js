@@ -58,6 +58,7 @@ app.get('/detail', function (req, res) {
                 id: "1234",
                 title,
                 currency_id: "PEN",
+                description: "“​Dispositivo móvil de Tienda e-commerce​”",
                 picture_url: `${SITE_URL}${img.replace('.', '')}`,
                 unit_price: parseInt(price),
                 quantity: parseInt(unit),
@@ -76,7 +77,7 @@ app.get('/detail', function (req, res) {
             ],
             excluded_payment_methods: [
                 {
-                    id: "dinners"
+                    id: "diners"
                 }
             ],
             installments: 6
