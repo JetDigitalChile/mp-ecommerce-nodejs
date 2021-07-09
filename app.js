@@ -97,7 +97,7 @@ app.post('/submit', function (req, res) {
         .then(function (response) {
             console.info(response.body.id)
             let init_point = response.body.init_point;
-            res.redirect(`/redirectcho?init_point=${init_point}`)
+            res.redirect(init_point)
         }).catch(function (error) {
             console.log(error);
             res.render('failure', req.query);
