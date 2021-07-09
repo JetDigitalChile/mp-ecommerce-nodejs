@@ -24,24 +24,12 @@ app.get('/', function (req, res) {
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/detail', function (req, res) {
-    res.render('detail', req.query);
-});
-app.get('/success', function (req, res) {
-    res.render('success', req.query);
-});
-app.get('/pending', function (req, res) {
-    res.render('pending', req.query);
-});
-app.get('/failure', function (req, res) {
-    res.render('failure', req.query);
-});
-app.get('/redirectcho', function (req, res) {
-    res.render('redirectcho', req.query);
-});
-
-app.post('/submit', function (req, res) {
-    const { title, unit_price, quantity, picture_url } = req.body;
+    const { title, price, unit, img } = req.query
     let preference = {
+        access_token: PROD_ACCESS_TOKEN,
+        integrator_id: INTEGRATOR_ID,
+        collector_id: parseInt(COLLECTOR_ID),
+        auto_return: "approved",
         payer: {
             name: "Lalo",
             surname: "Landa",
@@ -62,15 +50,14 @@ app.post('/submit', function (req, res) {
         },
         notification_url: `${SITE_URL}/webhook`,
         external_reference: "javier@jetdigital.cl",
-        collector_id: parseInt(COLLECTOR_ID),
         items: [
             {
-                id: 1234,
+                id: "1234",
                 title,
                 currency_id: "PEN",
-                picture_url: `${SITE_URL}${picture_url.replace('.', '')}`,
-                unit_price: parseInt(unit_price),
-                quantity: parseInt(quantity),
+                picture_url: `${SITE_URL}${img.replace('.', '')}`,
+                unit_price: parseInt(price),
+                quantity: parseInt(unit),
             }
         ],
         back_urls: {
@@ -78,7 +65,6 @@ app.post('/submit', function (req, res) {
             failure: `${SITE_URL}/failure`,
             pending: `${SITE_URL}/pending`,
         },
-        auto_return: "approved",
         payment_methods: {
             excluded_payment_methods: [
                 {
@@ -97,11 +83,27 @@ app.post('/submit', function (req, res) {
         .then(function (response) {
             console.info(response.body.id)
             let init_point = response.body.init_point;
-            res.redirect(init_point)
+            res.render('detail', { ...req.query, init_point });
         }).catch(function (error) {
             console.log(error);
             res.render('failure', req.query);
         });
+});
+app.get('/success', function (req, res) {
+    res.render('success', req.query);
+});
+app.get('/pending', function (req, res) {
+    res.render('pending', req.query);
+});
+app.get('/failure', function (req, res) {
+    res.render('failure', req.query);
+});
+app.get('/redirectcho', function (req, res) {
+    res.render('redirectcho', req.query);
+});
+
+app.post('/submit', function (req, res) {
+    
 })
 app.use(bodyParser.json())
 app.post('/webhook', function (req, res) {
