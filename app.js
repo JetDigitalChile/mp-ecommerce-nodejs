@@ -63,7 +63,7 @@ app.post('/submit', function (req, res) {
                 zip_code: "03940"
             },
         },
-        notification_url: "https://localhost:3000/webhook",
+        notification_url: `${SITE_URL}/webhook`,
         external_reference: "javier@jetdigital.cl",
         collector_id: parseInt(COLLECTOR_ID),
         items: [
@@ -96,12 +96,9 @@ app.post('/submit', function (req, res) {
             installments: 6
         }
     };
-    console.log(preference)
-    //Start getting preference and console.log()
     mercadopago.preferences.create(preference)
         .then(function (response) {
-            // Este valor reemplazará el string "<%= global.id %>" en tu HTML
-            console.info(response)
+            console.info(response.body.id)
             let init_point = response.body.init_point;
             res.redirect(`/redirectcho?init_point=${init_point}`)
         }).catch(function (error) {
