@@ -38,10 +38,7 @@ app.get('/failure', function (req, res) {
 app.get('/redirectcho', function (req, res) {
     res.render('redirectcho', req.query);
 });
-app.post('/webhook', function (req, res) {
-    console.log(req.body)
-    res.status(200).end()
-});
+
 app.post('/submit', function (req, res) {
     const { title, unit_price, quantity, picture_url } = req.body;
     let preference = {
@@ -106,5 +103,9 @@ app.post('/submit', function (req, res) {
             res.render('failure', req.query);
         });
 })
-
+app.use(bodyParser.json())
+app.post('/webhook', function (req, res) {
+    console.log(req.body)
+    res.status(200).end()
+});
 app.listen(port);
