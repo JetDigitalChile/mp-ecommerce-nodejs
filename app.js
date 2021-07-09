@@ -2,25 +2,28 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 require('dotenv').config()
 var bodyParser = require('body-parser');
-var port = process.env.PORT || 3000
-const { SITE_URL, PROD_ACCESS_TOKEN, PAYER_EMAIL, INTEGRATOR_ID, COLLECTOR_ID, PUBLIC_KEY } = process.env
-var app = express();
-// SDK de Mercado Pago
 const mercadopago = require('mercadopago');
-// Agrega credenciales
+const { SITE_URL, PROD_ACCESS_TOKEN, PAYER_EMAIL, INTEGRATOR_ID, COLLECTOR_ID, PORT } = process.env
+var port = PORT || 3000
+var app = express();
+
 mercadopago.configure({
     access_token: PROD_ACCESS_TOKEN,
     integrator_id: INTEGRATOR_ID,
 });
+
 app.engine('handlebars', exphbs());
+
 app.set('view engine', 'handlebars');
 
 app.use(express.static('assets'));
 
 app.use('/assets', express.static(__dirname + '/assets'));
+
 app.get('/', function (req, res) {
     res.render('home');
 });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/detail', function (req, res) {
@@ -99,13 +102,6 @@ app.get('/pending', function (req, res) {
 app.get('/failure', function (req, res) {
     res.render('failure', req.query);
 });
-app.get('/redirectcho', function (req, res) {
-    res.render('redirectcho', req.query);
-});
-
-app.post('/submit', function (req, res) {
-    
-})
 app.use(bodyParser.json())
 app.post('/webhook', function (req, res) {
     console.log(req.body)
